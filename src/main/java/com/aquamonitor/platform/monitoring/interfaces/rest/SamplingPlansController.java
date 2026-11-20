@@ -5,6 +5,7 @@ import com.aquamonitor.platform.pc27737u202114790.monitoring.application.service
 import com.aquamonitor.platform.pc27737u202114790.monitoring.interfaces.rest.resources.CreateSamplingPlanRequest;
 import com.aquamonitor.platform.pc27737u202114790.monitoring.interfaces.rest.resources.SamplingPlanResource;
 import com.aquamonitor.platform.pc27737u202114790.shared.interfaces.rest.transform.ResponseEntityAssembler;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import jakarta.validation.Valid;
 
 /**
  * REST endpoint for sampling plan creation.
@@ -27,6 +27,12 @@ public class SamplingPlansController {
         this.createSamplingPlanService = createSamplingPlanService;
     }
 
+    /**
+     * Creates a sampling plan.
+     *
+     * @param request validated request body without a database id
+     * @return HTTP 201 with the saved plan, or a localized error response
+     */
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody CreateSamplingPlanRequest request) {
         var command = new CreateSamplingPlanCommand(

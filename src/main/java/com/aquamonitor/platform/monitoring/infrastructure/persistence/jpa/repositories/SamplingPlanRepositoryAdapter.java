@@ -20,15 +20,22 @@ public class SamplingPlanRepositoryAdapter implements SamplingPlanRepository {
 
     private final SamplingPlanJpaRepository jpaRepository;
 
+    /**
+     * Creates the JPA adapter.
+     *
+     * @param jpaRepository Spring Data repository
+     */
     public SamplingPlanRepositoryAdapter(SamplingPlanJpaRepository jpaRepository) {
         this.jpaRepository = jpaRepository;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean existsByPlanCode(String planCode) {
         return jpaRepository.existsByPlanCode(planCode);
     }
 
+    /** {@inheritDoc} */
     @Override
     public long save(SamplingPlan samplingPlan) {
         var entity = new SamplingPlanEntity(

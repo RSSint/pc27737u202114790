@@ -8,5 +8,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface SamplingPlanJpaRepository extends JpaRepository<SamplingPlanEntity, Long> {
 
+    /**
+     * Checks whether a plan code is already stored.
+     *
+     * @param planCode code to check
+     * @return true when a matching entity exists
+     */
     boolean existsByPlanCode(String planCode);
 }

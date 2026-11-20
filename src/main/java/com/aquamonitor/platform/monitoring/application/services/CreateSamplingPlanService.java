@@ -11,11 +11,13 @@ import com.aquamonitor.platform.pc27737u202114790.monitoring.domain.repositories
 import com.aquamonitor.platform.pc27737u202114790.shared.application.result.ApplicationError;
 import com.aquamonitor.platform.pc27737u202114790.shared.application.result.Result;
 import org.jspecify.annotations.NullMarked;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.util.ResourceBundle;
 import java.util.UUID;
 
 /**
@@ -31,13 +33,19 @@ public class CreateSamplingPlanService {
         this.samplingPlanRepository = samplingPlanRepository;
     }
 
+    /**
+     * Validates, checks uniqueness, and persists a sampling plan.
+     *
+     * @param command creation data
+     * @return either the saved plan and id or a structured application error
+     */
     public Result<CreatedSamplingPlan, ApplicationError> handle(CreateSamplingPlanCommand command) {
         try {
             SamplingPlan samplingPlan = toDomain(command);
             if (samplingPlanRepository.existsByPlanCode(samplingPlan.getPlanCode())) {
                 return Result.failure(ApplicationError.conflict(
                         "SAMPLING_PLAN",
-                        "A sampling plan with this planCode already exists."));
+                        ""));
             }
 
             long id = samplingPlanRepository.save(samplingPlan);
@@ -45,11 +53,11 @@ public class CreateSamplingPlanService {
         } catch (DuplicateSamplingPlanCodeException exception) {
             return Result.failure(ApplicationError.conflict(
                     "SAMPLING_PLAN",
-                    exception.getMessage()));
+                    ""));
         } catch (IllegalArgumentException | ArithmeticException | DateTimeException exception) {
             return Result.failure(ApplicationError.validationError(
                     "sampling-plan",
-                    exception.getMessage() == null ? "Request contains invalid values." : exception.getMessage()));
+                    message("samplingPlan.validation.invalid")));
         }
     }
 
@@ -89,5 +97,9 @@ public class CreateSamplingPlanService {
 
     private SamplingPlanStatus parseStatus(String value) {
         return value == null ? null : SamplingPlanStatus.valueOf(value);
+    }
+
+    private String message(String key) {
+        return ResourceBundle.getBundle("messages", LocaleContextHolder.getLocale()).getString(key);
     }
 }
