@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,12 +19,16 @@ import java.util.UUID;
  * JPA persistence entity for a water sampling plan.
  */
 @Entity
-@Table(name = "sampling_plans")
+@Table(
+        name = "sampling_plans",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uk_sampling_plans_plan_code",
+                columnNames = "plan_code"))
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SamplingPlanEntity extends AuditableAbstractPersistenceEntity {
 
-    @Column(nullable = false)
+    @Column(name = "plan_code", nullable = false)
     private String planCode;
 
     @Column(nullable = false)
