@@ -32,6 +32,21 @@ public class SamplingPlan extends AbstractDomainAggregateRoot<SamplingPlan> {
             Integer priorityLevel,
             @Nullable SamplingPlanStatus status,
             @Nullable String samplingNotes) {
+        if (planCode == null || planCode.isBlank()) {
+            throw new IllegalArgumentException("planCode is required.");
+        }
+        if (stationId == null) {
+            throw new IllegalArgumentException("stationId is required and must be a valid UUID.");
+        }
+        if (samplingWindow == null) {
+            throw new IllegalArgumentException("samplingWindow is required.");
+        }
+        if (sampleVolume == null) {
+            throw new IllegalArgumentException("sampleVolume is required.");
+        }
+        if (priorityLevel == null || priorityLevel < 1 || priorityLevel > 5) {
+            throw new IllegalArgumentException("priorityLevel must be between 1 and 5.");
+        }
         this.planCode = planCode;
         this.stationId = stationId;
         this.samplingWindow = samplingWindow;
